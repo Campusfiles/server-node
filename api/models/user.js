@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { dateOptions } = require("./variables");
+const { dateOptions, emailRegex } = require("./variables");
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
         type: String, 
         required: true, 
         unique: true, 
-        match: /[a-z0-9!#$%&"*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&"*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+        match: emailRegex
     },
     password: { type: String, required: true }
 }, dateOptions);
