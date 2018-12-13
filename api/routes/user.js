@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
-router.post("/signup", (req, res, next) => {
+router.post("/signup", (req, res) => {
   User.find({ email: req.body.email }).exec().then(user => {
       if (user.length >= 1) {
         return res.send({ status: 409, message: "Email already exists" });
@@ -35,7 +35,7 @@ router.post("/signup", (req, res, next) => {
     });
 });
 
-router.post("/login", (req, res, next) => {
+router.post("/login", (req, res) => {
   User.find({ email: req.body.email }).exec().then(user => {
     if (user.length < 1) {
       return res.send({ status: 401, message: "Auth failed" });
@@ -50,7 +50,7 @@ router.post("/login", (req, res, next) => {
             email: user[0].email,
             userId: user[0]._id
           },
-          "secret",
+          process.env.JWT_KEY,
           {
               expiresIn: "1h"
           }
@@ -59,7 +59,7 @@ router.post("/login", (req, res, next) => {
           status: 200,
           message: "Successfully Authenticated",
           token: token,
-          data: user
+          data: user[0]
         });
       }
       res.send({ message: "Authentication failed", status: 401 });
