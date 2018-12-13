@@ -1,11 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import bodyParser from "body-parser";
-import BlueBird from "bluebird";
 import Router from "./router";
-import { connect, Mongoose } from "mongoose";
+import { connect } from "mongoose";
 
-const { MONGODB_PASSWORD, MONGODB_USERNAME } = process.env;
+import { MONGODB_DATABASE, MONGODB_PASSWORD, MONGODB_USERNAME } from "./models/variables";
 
 class App {
   public app: express.Application;
@@ -15,7 +14,6 @@ class App {
     this.appRouter = new Router(this.app);
     this.config(this.app);
     this.routes(this.app, this.appRouter.router);
-    (<any>Mongoose).Promise = BlueBird;
   }
 
   public config(app: express.Application) {
@@ -38,7 +36,7 @@ class App {
   public routes(app: express.Application, routerLink: express.Router) {
     app.use(async (req: Request, res: Response, next: NextFunction) => {
       if (!app.get("mongoConnection")) {
-        const conn = await connect(`mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0-shard-00-00-fprc1.mongodb.net:27017,cluster0-shard-00-01-fprc1.mongodb.net:27017,cluster0-shard-00-02-fprc1.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true`);
+        const conn = await connect(`mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0-shard-00-00-fprc1.mongodb.net:27017,cluster0-shard-00-01-fprc1.mongodb.net:27017,cluster0-shard-00-02-fprc1.mongodb.net:27017/${MONGODB_DATABASE}?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true`);
         app.set("mongoConnection", conn);
       }
       next();
@@ -47,7 +45,7 @@ class App {
     app.use("/api/", routerLink);
 
     app.use((req: Request, res: Response) => {
-      res.status(404).json({ status: "Invalid Request!" });
+      res.status(404).json({ status: "Route not found." });
     });
   }
 }

@@ -32,7 +32,7 @@ export class Users {
                                 res.send({
                                     status: 200,
                                     data,
-                                    message: "Success"
+                                    message: "Successfully added"
                                 });
                             }).catch(err => {
                                 res.send({ status: 500, error: err });
@@ -48,12 +48,12 @@ export class Users {
         return (req: Request, res: Response) => {
             this.User.find({ email: req.body.email }).exec().then((user: any) => {
                 if (user.length < 1) {
-                    return res.send({ status: 401, message: "Auth failed" });
+                    return res.send({ status: 401, message: "No user found" });
                 }
 
                 bcrypt.compare(req.body.password, user[0].password, (err, result) => {
                     if (err) {
-                        return res.send({ status: 401, message: "Auth failed" });
+                        return res.send({ status: 401, message: "Invalid token" });
                     }
                     if (result) {
                         const token = jwt.sign(
@@ -63,7 +63,7 @@ export class Users {
                             },
                             typeof process.env.JWT_KEY !== "undefined" ? process.env.JWT_KEY : "secret",
                             {
-                                expiresIn: "1h"
+                                expiresIn: "365d"
                             }
                         );
                         return res.send({

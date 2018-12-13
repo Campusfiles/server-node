@@ -1,3 +1,15 @@
+const { NODE_ENV } = process.env;
+let { MONGODB_PASSWORD, MONGODB_USERNAME, MONGODB_DATABASE } = process.env;
+
+if (NODE_ENV === "development") {
+    MONGODB_PASSWORD = "admin";
+    MONGODB_USERNAME = ""
+}
+
+if(typeof MONGODB_DATABASE === "undefined") {
+    MONGODB_DATABASE = "campusfiles";
+}
+
 const dateOptions = {
     timestamps: {
         createdAt: "dateCreated",
@@ -9,5 +21,8 @@ const emailRegex = /[a-z0-9!#$%&"*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&"*+/=?^_`{|}~-]
 
 export {
     dateOptions,
-    emailRegex
+    emailRegex,
+    MONGODB_DATABASE,
+    MONGODB_PASSWORD,
+    MONGODB_USERNAME
 }
