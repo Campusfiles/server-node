@@ -7,9 +7,8 @@ class Api {
   }
   async initializeApp() {
     try {
-      const ServerApp = App.app;
       const server = http
-        .createServer(ServerApp)
+        .createServer(App.app)
         .listen(this.port, () => this.onListen(server.address()))
         .on("error", this.onError);
     } catch (error) {

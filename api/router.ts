@@ -9,7 +9,7 @@ import { validateToken } from "./middleware/check-token";
 class AppRouter {
   public router: Router;
 
-  constructor(serverApp: any) {
+  constructor(app: any) {
     this.router = Router();
     this.routes();
   }
