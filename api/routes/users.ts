@@ -4,8 +4,25 @@ import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
+const updates: any = {};
+const conn: any = [];
+
 export class Users {
     User = users;
+
+    stream() {
+        return (req: Request, res: Response) => {
+            res.sseSetup();
+            conn.push(res);
+        }
+    }
+
+    sendUpdate(data: any) {
+        for(var i = 0; i < conn.length; i++) {
+            updates["data"] = data;
+            conn[i].sseSend(updates)
+        }
+    }
 
     getUsers() {
         return (req: Request, res: Response) => {
@@ -29,6 +46,7 @@ export class Users {
                                 password: hash
                             });
                             user.save().then(data => {
+                                this.sendUpdate(data);
                                 res.send({
                                     status: 200,
                                     data,
