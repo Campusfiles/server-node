@@ -9,9 +9,11 @@ import { MONGODB_DATABASE, MONGODB_PASSWORD, MONGODB_USERNAME } from "./models/v
 class App {
   public app: express.Application;
   private appRouter: any;
+
   constructor() {
     this.app = express();
     this.appRouter = new Router(this.app);
+    this.sse(this.app);
     this.config(this.app);
     this.routes(this.app, this.appRouter.router);
   }
@@ -32,7 +34,25 @@ class App {
       }
     });
   }
- 
+
+  sse(app: express.Application) {
+    app.use((req: Request , res: Response, next: NextFunction) => {
+      res.sseSetup = function() {
+        res.writeHead(200, {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive'
+        })
+      }
+
+      res.sseSend = (data: any) => {
+        res.write("data: " + JSON.stringify(data) + "\n\n");
+      }
+
+      next();
+    });
+  }
+
   public routes(app: express.Application, routerLink: express.Router) {
     app.use(async (req: Request, res: Response, next: NextFunction) => {
       if (!app.get("mongoConnection")) {
