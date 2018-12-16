@@ -1,6 +1,15 @@
 import http from "http";
 import App from "./App";
 
+declare global {
+  namespace Express {
+    interface Response {
+      sseSetup: any;
+      sseSend: any;
+    }
+  }
+}
+
 class Api {
   constructor(private port?: number) {
     this.port = this.normalizePort(process.env.PORT || 3000);
