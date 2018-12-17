@@ -24,6 +24,7 @@ class AppRouter {
   }
 
   private Users(url: string, api: Users) {
+    this.router.get(`${url}/stream`, api.stream());
     this.router.get(url, validateToken, api.getUsers());
     this.router.post(url, api.postUsers());
     this.router.post(`${url}/login`, api.loginUser());
