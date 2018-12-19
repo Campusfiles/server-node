@@ -36,18 +36,18 @@ class App {
   }
 
   sse(app: express.Application) {
-    app.use((req: Request , res: Response, next: NextFunction) => {
+    app.use((req: Request, res: Response, next: NextFunction) => {
       res.sseSetup = function() {
         res.writeHead(200, {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive'
-        })
-      }
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        });
+      };
 
       res.sseSend = (data: any) => {
         res.write("data: " + JSON.stringify(data) + "\n\n");
-      }
+      };
 
       next();
     });
@@ -56,7 +56,9 @@ class App {
   public routes(app: express.Application, routerLink: express.Router) {
     app.use(async (req: Request, res: Response, next: NextFunction) => {
       if (!app.get("mongoConnection")) {
-        const conn = await connect(`mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0-shard-00-00-fprc1.mongodb.net:27017,cluster0-shard-00-01-fprc1.mongodb.net:27017,cluster0-shard-00-02-fprc1.mongodb.net:27017/${MONGODB_DATABASE}?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true`);
+        const conn = await connect(
+          `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0-shard-00-00-fprc1.mongodb.net:27017,cluster0-shard-00-01-fprc1.mongodb.net:27017,cluster0-shard-00-02-fprc1.mongodb.net:27017/${MONGODB_DATABASE}?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true`
+        );
         app.set("mongoConnection", conn);
       }
       next();
