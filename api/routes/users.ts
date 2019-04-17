@@ -94,7 +94,7 @@ export class Users {
                     res.send({ message: "Authentication failed", status: 401 });
                 });
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                 res.send({ error: err, status: 500 });
             });
         }
@@ -108,7 +108,7 @@ export class Users {
                     message: "User deleted"
                 });
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                 res.send({ error: err, status: 500 });
             });
         }   
