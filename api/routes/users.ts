@@ -3,6 +3,8 @@ import { users } from "../models"
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import { validateBody } from "../middleware/validators/body";
+import { NextFunction } from "connect";
 
 const updates: any = {};
 const conn: any = [];
@@ -42,8 +44,9 @@ export class Users {
                         } else {
                             const user = new this.User({
                                 _id: new mongoose.Types.ObjectId(),
+                                ...req.body,
                                 email: req.body.email,
-                                password: hash
+                                password: hash,
                             });
                             user.save().then(data => {
                                 this.sendUpdate(data);
@@ -63,7 +66,7 @@ export class Users {
     }
     
     loginUser(){
-        return (req: Request, res: Response) => {
+        return (req: Request, res: Response, next: NextFunction) => {
             this.User.find({ email: req.body.email }).exec().then((user: any) => {
                 if (user.length < 1) {
                     return res.send({ status: 401, message: "No user found" });
@@ -94,7 +97,6 @@ export class Users {
                     res.send({ message: "Authentication failed", status: 401 });
                 });
             }).catch(err => {
-                // console.log(err);
                 res.send({ error: err, status: 500 });
             });
         }
@@ -108,7 +110,7 @@ export class Users {
                     message: "User deleted"
                 });
             }).catch(err => {
-                // console.log(err);
+                console.log(err);
                 res.send({ error: err, status: 500 });
             });
         }   
