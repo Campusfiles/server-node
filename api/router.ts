@@ -5,7 +5,7 @@ import {
 } from "./routes";
 
 import { validateToken } from "./middleware/check-token";
-
+import { validateBody } from "./middleware/validators/body";
 class AppRouter {
   public router: Router;
 
@@ -26,8 +26,8 @@ class AppRouter {
   private Users(url: string, api: Users) {
     this.router.get(`${url}/stream`, api.stream());
     this.router.get(url, validateToken, api.getUsers());
-    this.router.post(url, api.postUsers());
-    this.router.post(`${url}/login`, api.loginUser());
+    this.router.post(url, validateBody, api.postUsers());
+    this.router.post(`${url}/login`, validateBody, api.loginUser());
   }
 }
 

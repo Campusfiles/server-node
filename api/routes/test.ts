@@ -17,8 +17,6 @@ class Foo {
   @Log()
   doFooStuff(val: any, deps?: any) {
     const { fetch, validate, aws } = deps;
-    console.log("test", val);
-    console.log(fetch, validate, aws);
   }
 }
 
@@ -27,7 +25,7 @@ class Bar {
   constructor(public foo: Foo) {}
 
   doBarStuff() {
-    console.log("bar");
+    // console.log("bar");
   }
 }
 

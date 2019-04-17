@@ -56,9 +56,9 @@ class App {
   public routes(app: express.Application, routerLink: express.Router) {
     app.use(async (req: Request, res: Response, next: NextFunction) => {
       if (!app.get("mongoConnection")) {
-        const conn = await connect(
-          `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0-shard-00-00-fprc1.mongodb.net:27017,cluster0-shard-00-01-fprc1.mongodb.net:27017,cluster0-shard-00-02-fprc1.mongodb.net:27017/${MONGODB_DATABASE}?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true`
-        );
+        const conn = await connect(`mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0-shard-00-00-fprc1.mongodb.net:27017,cluster0-shard-00-01-fprc1.mongodb.net:27017,cluster0-shard-00-02-fprc1.mongodb.net:27017/${MONGODB_DATABASE}?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true`, {
+          useNewUrlParser: true
+        });
         app.set("mongoConnection", conn);
       }
       next();
@@ -66,7 +66,7 @@ class App {
 
     app.use("/api/", routerLink);
 
-    app.use((req: Request, res: Response) => {
+    app.use((_: Request, res: Response) => {
       res.status(404).json({ status: "Route not found." });
     });
   }

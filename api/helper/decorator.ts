@@ -14,9 +14,9 @@ export const Service = (): GenericClassDecorator<Type<any>> => {
 export function Log(): any {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const method = descriptor.value;
-    console.log("Target", descriptor.value);
+    // console.log("Target", descriptor.value);
     descriptor.value = (...args: any) => {
-      console.log(args);
+      // console.log(args);
       return method.apply(null, [...args, { fetch: "fetch", validate: "validate", aws: "aws" }]);
     };
   };
